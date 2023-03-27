@@ -121,14 +121,14 @@ st.write(
 
 st.write(
     """
-    In this case, we take POV from Internet Service Provider Company and use their data.
+    In this case, I take Spotify or in code SPOT. There is no specific scientific reason why choose it, I just love the company and the product. Hope someday will be there.
     """
 )
 
 st.subheader('Data Understanding')
 st.write(
     """
-    **Source : [Kaggle.](https://www.kaggle.com/datasets/mehmetsabrikunt/internet-service-churn?sort=votes)**
+    **Source : Take it from yfinance API, you can see on the notebook how I gotten it**
     """
 )
 
@@ -140,16 +140,18 @@ st.write(
 
 st.dataframe(df.sample(5))
 
+st.write(
+    """
+    **Below is my understanding about each column**
+    Open :
+    Close : 
+    """
+)
+
 st.subheader('Method')
 st.write(
     """
-    Compared some method of category prediction modeling. They are :
-    1. Logistic Regression
-    2. K-Neighbors Classifier
-    3. Decision Tree Classifier
-    4. Random Forest Classifier
-    5. XGBoost Classifier
-    6. CatBoost Classifier
+    Used LSTM Neural Network
     """
 )
 
@@ -158,9 +160,10 @@ st.write("""
 """)
 
 graph = graphviz.Digraph()
-graph.edge('EDA', 'Data Preprocessing')
+graph.edge('EDA', 'Assumption Test')
+graph.edge('Assumption Test', 'Data Preprocessing')
 graph.edge('Data Preprocessing', 'Modeling')
-graph.edge('Modeling', 'Hyperparameter Tuning')
+graph.edge('Modeling', 'Evaluation')
 
 
 
