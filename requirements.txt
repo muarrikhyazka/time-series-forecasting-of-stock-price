@@ -1,0 +1,7 @@
+pandas
+streamlit
+Pillow
+bokeh
+graphviz
+plotly
+pybase64
