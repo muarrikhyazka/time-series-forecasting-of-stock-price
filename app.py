@@ -170,7 +170,7 @@ st.graphviz_chart(graph)
 
 
 
-st.subheader('Insights')
+st.subheader('Modeling')
 st.write(
     """
     I calculated word frequency and see on top 10 in unigram and bigram. Try to see all chart combination between sentiment and category and will show you which has insight.
