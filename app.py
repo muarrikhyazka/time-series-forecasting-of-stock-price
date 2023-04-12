@@ -3,8 +3,17 @@ import streamlit as st
 from PIL import Image
 from bokeh.models.widgets import Div
 import plotly.express as px
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import graphviz
 import base64
+from statsmodels.compat.numpy import NP_LT_123
+from pandas.util._decorators import Appender
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.seasonal import seasonal_decompose
+import statsmodels.api as sm
+
+
 
 
 title = 'Time Series Forecasting of Spotify Stock Price'
@@ -54,11 +63,13 @@ with open(file_name) as f:
 # Content
 @st.cache
 def load_data():
-    df_raw = pd.read_csv(r'data/internet_service_churn.csv')
+    df_raw = pd.read_csv(r'data/spotify_stock_price.csv', sep=';')
     df = df_raw.copy()
     return df_raw, df
 
 df_raw, df = load_data()
+
+
 
 def render_svg(svg):
     """Renders the given svg string."""
@@ -173,37 +184,161 @@ st.graphviz_chart(graph)
 st.subheader('Modeling')
 st.write(
     """
-    I calculated word frequency and see on top 10 in unigram and bigram. Try to see all chart combination between sentiment and category and will show you which has insight.
+    Before do the modeling, I need to do some tests and on it.
     """
 )
 
-## convert to corpus
-top=10
-corpus = df["content_clean"][(df['sentiment']=='NEGATIVE') & (df['predicted_category']=='INTERFACE')]
-lst_tokens = nltk.tokenize.word_tokenize(corpus.str.cat(sep=" "))
+st.write(
+    """
+    **Plot**
+    """
+)
+st.write(
+    """
+    Want to see the trend
+    """
+)
 
-    
-## calculate words bigrams
-dic_words_freq = nltk.FreqDist(nltk.ngrams(lst_tokens, 2))
-dtf_bi = pd.DataFrame(dic_words_freq.most_common(), 
-                      columns=["Word","Freq"])
-dtf_bi["Word"] = dtf_bi["Word"].apply(lambda x: " ".join(
-                   string for string in x) )
-fig_bi = px.bar(dtf_bi.iloc[:top,:].sort_values(by="Freq"), x="Freq", y="Word", orientation='h',
-             hover_data=["Word", "Freq"],
-             height=400,
-             title='Top 10 Bigrams Text')
-st.plotly_chart(fig_bi, use_container_width=True)
+## preprocessing
+df = df.reset_index()
+df['Date'] = pd.to_datetime(df['Date'])
+df.index = df['Date']
+
+## build plotting function
+def plot_line(data, cols =[]):
+    for col in cols:
+        plt.figure(figsize=(20, 5))
+        plt.plot(data[col])
+        plt.grid(color='black')
+        plt.title(col)
+        plt.xticks(rotation=90)
+        ax = plt.gca()
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+        plt.show()
+        st.pyplot(ax.figure)
+
+plot_line(df,['Close'])
+
+st.write(
+    """
+    **PACF (Partial Auto Correlation Function)**
+    """
+)
+st.write(
+    """
+    Want to check is it correlated with past data or not and how far.
+    """
+)
+
+pacf = sm.graphics.tsa.plot_pacf(df['Close'], lags=26, method="ywm")
+st.pyplot(pacf.figure)
+
+st.write(
+    """
+    From this plot, it looks like a statistically significant correlation may exist until two years.
+    """
+)
+
+st.write(
+    """
+    **Seasonal Decomposition**
+    """
+)
+st.write(
+    """
+    Want to check is there any seasonal pattern in the data.
+    """
+)
+
+decom = seasonal_decompose(df[['Close']], model='additive', period=12).plot()
+st.pyplot(decom.figure)
+
+st.write(
+    """
+    From the plot, we can see there is seasonal pattern.
+    """
+)
+
+st.write(
+    """
+    **Stationarity Check**
+    """
+)
+st.write(
+    """
+    Want to check whether stationary or not.
+    """
+)
+
+## stationarity check
+result = adfuller(df['Close'])
+st.code(f'Test Statistics: {result[0]}')
+st.code(f'p-value: {result[1]}')
+st.code(f'critical_values: {result[4]}')
+
+if result[1] > 0.05:
+    st.code("Series is not stationary")
+else:
+    st.code("Series is stationary")
+
+st.write(
+    """
+    **Modeling**
+    """
+)
+st.write(
+    """
+    Lets move to modeling. There are some step which I didnt show, they are
+    \n1. Split the data.
+    \n2. Determine parameter.
+    \n3. Fit the model.
+    """
+)
+
+st.write(
+    """
+    Below is the comparison between train, validation, and prediction data. The model performance on RMSE is
+    """
+)
+
+st.code('5.08830294388938')
+
+## load data in modeling
+@st.cache
+def load_data_modeling():
+    train_df = pd.read_csv(r'data/train.csv', sep=';')
+    valid_df = pd.read_csv(r'data/valid.csv', sep=';')
+    return train_df, valid_df
+
+train_raw, valid_raw = load_data_modeling()
+
+train= train_raw.copy()
+valid= valid_raw.copy()
+
+
+train['Date'] = pd.to_datetime(train['Date'])
+train.index = train['Date']
+
+valid['Date'] = pd.to_datetime(valid['Date'])
+valid.index = valid['Date']
+
+
+## visualize the data
+result = plt.figure(figsize=(16,6))
+plt.title('Model')
+plt.xlabel('Date', fontsize=18)
+plt.ylabel('Close Price USD ($)', fontsize=18)
+plt.plot(train['Close'])
+plt.plot(valid[['Close', 'Predictions']])
+plt.legend(['Train', 'Val', 'Predictions'], loc='upper right')
+st.pyplot(result.figure)
 
 st.write("""
-    We can see here, its combination between negative sentiment and interface category. 
-    It shows us that interface in TV is needed to be improved because android tv was mentioned sometimes. 
-    Many other words which is related to TV such as mi Box (Xiaomi set top box for TV), dolby digital (sound in smart tv), and nvidia shield (android tv-based digital media player).
-    It indicates that Netflix should prioritize to improve their app in TV. 
-    Furthermore, in detail many complaints for voice search feature, so It should be attention to start.
+    With RMSE around 5, this model is good enough to be implemented on production.
 """)
 
 c1, c2 = st.columns(2)
 with c1:
-    st.info('**[Github Repo](https://github.com/muarrikhyazka/internet-service-provider-churn-prediction)**', icon="🍣")
+    st.info('**[Github Repo](https://github.com/muarrikhyazka/time-series-forecasting-of-stock-price)**', icon="🍣")
 
