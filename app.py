@@ -99,14 +99,14 @@ with st.sidebar:
     st.write('\n')
     st.write('\n')
 
-    if st.button('🏠 HOME', on_click=https://muarrikhyazka.github.io):
-        js = "window.location.href = 'https://muarrikhyazka.github.io'"  # Current tab
+    if st.button('🏠 HOME', on_click='https://muarrikhyazka.github.io'):
+        js = "window.location.href = https://muarrikhyazka.github.io"  # Current tab
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
 
-    if st.button('🍱 GITHUB', on_click=https://github.com/muarrikhyazka):
-        js = "window.location.href = 'https://github.com/muarrikhyazka'"  # Current tab
+    if st.button('🍱 GITHUB', on_click='https://github.com/muarrikhyazka'):
+        js = "window.location.href = https://github.com/muarrikhyazka"  # Current tab
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
@@ -306,7 +306,7 @@ st.code('5.08830294388938')
 
 ## load data in modeling
 @st.cache
-def load_data_modeling():
+def load_data_modeling(allow_output_mutation=True):
     train_df = pd.read_csv(r'data/train.csv', sep=';')
     valid_df = pd.read_csv(r'data/valid.csv', sep=';')
     return train_df, valid_df
