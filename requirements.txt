@@ -2,6 +2,8 @@ pandas
 streamlit
 Pillow
 bokeh
+matplotlib
 graphviz
 plotly
 pybase64
+statsmodels
