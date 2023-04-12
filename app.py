@@ -99,13 +99,13 @@ with st.sidebar:
     st.write('\n')
     st.write('\n')
 
-    if st.button('🏠 HOME', on_click='https://muarrikhyazka.github.io'):
+    if st.button('🏠 HOME', on_click=https://muarrikhyazka.github.io):
         js = "window.location.href = 'https://muarrikhyazka.github.io'"  # Current tab
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
 
-    if st.button('🍱 GITHUB', on_click='https://github.com/muarrikhyazka'):
+    if st.button('🍱 GITHUB', on_click=https://github.com/muarrikhyazka):
         js = "window.location.href = 'https://github.com/muarrikhyazka'"  # Current tab
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
