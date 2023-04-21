@@ -99,14 +99,16 @@ with st.sidebar:
     st.write('\n')
     st.write('\n')
 
-    if st.button('🏠 HOME', on_click='https://muarrikhyazka.github.io'):
-        js = "window.location.href = 'https://muarrikhyazka.github.io'"  # Current tab
+    if st.button('🏠 HOME'):
+        # js = "window.location.href = 'http://www.muarrikhyazka.com'"  # Current tab
+        js = "window.open('http://www.muarrikhyazka.com')"
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
 
-    if st.button('🍱 GITHUB', on_click='https://github.com/muarrikhyazka'):
-        js = "window.location.href = 'https://github.com/muarrikhyazka'"  # Current tab
+    if st.button('🍱 GITHUB'):
+        # js = "window.location.href = 'https://www.github.com/muarrikhyazka'"  # Current tab
+        js = "window.open('https://www.github.com/muarrikhyazka')"
         html = '<img src onerror="{}">'.format(js)
         div = Div(text=html)
         st.bokeh_chart(div)
@@ -120,6 +122,13 @@ with st.sidebar:
 
 st.title(title)
 
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Business Understanding')
 st.write(
@@ -135,10 +144,18 @@ st.write(
     """
 )
 
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
+
 st.subheader('Data Understanding')
 st.write(
     """
-    **Source : Take it from yfinance API, you can see on the notebook how I gotten it**
+    **Source : Take it from yfinance API, you can see on the notebook how I gotten it.**
     """
 )
 
@@ -153,15 +170,27 @@ st.dataframe(df.sample(5))
 st.write(
     """
     **Below is my understanding about each column**
-    Open :
-    Close : 
+    \nOpen : stock price when the opening bell rang or the stock market open.
+    \nHigh : highest stock price during one period (on our case, its one day).
+    \nLow : lowest stock price during one period (on our case, its one day).
+    \nClose : stock price when the stock exchange closed shop for the day.
+    \nAdj Close : the closing price after adjustments for all applicable splits and dividend distributions.
+    \nVolume : the number of shares traded in a particular stock over a specific period of time.
+    """
+)
+
+st.write(
+    """
+    \n
+    \n
+    \n
     """
 )
 
 st.subheader('Method')
 st.write(
     """
-    Used LSTM Neural Network
+    Used LSTM Neural Network.
     """
 )
 
@@ -179,7 +208,13 @@ graph.edge('Modeling', 'Evaluation')
 
 st.graphviz_chart(graph)
 
-
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 st.subheader('Modeling')
 st.write(
@@ -195,7 +230,7 @@ st.write(
 )
 st.write(
     """
-    Want to see the trend
+    Want to see the trend.
     """
 )
 
@@ -289,7 +324,7 @@ st.write(
 )
 st.write(
     """
-    Lets move to modeling. There are some step which I didnt show, they are
+    Lets move to modeling. There are some step which I didnt show, they are : 
     \n1. Split the data.
     \n2. Determine parameter.
     \n3. Fit the model.
@@ -298,7 +333,7 @@ st.write(
 
 st.write(
     """
-    Below is the comparison between train, validation, and prediction data. The model performance on RMSE is
+    Below is the comparison between train, validation, and prediction data. The model performance on RMSE is :
     """
 )
 
@@ -337,6 +372,14 @@ st.pyplot(result.figure)
 st.write("""
     With RMSE around 5, this model is good enough to be implemented on production.
 """)
+
+st.write(
+    """
+    \n
+    \n
+    \n
+    """
+)
 
 c1, c2 = st.columns(2)
 with c1:
